@@ -43,7 +43,7 @@ console.log(req.body)
       z.push(y);
     }
      }
-  search=`select * from products order by product_category`;
+  search=`select * from products`;
   if(z[0]=='lt')
   {
     search=`select * from products where product_id<${q[x][z[0]]}`;
@@ -309,8 +309,13 @@ const {customer_id,customer_name,customer_email,customer_pass,customer_country,c
 }
 
 exports.loginCustomer =(req, res, next) => {
-      const customer_email=req.body.customer_email;
-      const customer_pass=req.body.customer_pass;
+  console.log(req)
+  //for form
+      const customer_email=JSON.parse(JSON.stringify(req.body)).c_email;
+      const customer_pass=JSON.parse(JSON.stringify(req.body)).c_pass;
+     // for postman
+      // const customer_email=  req.body.customer_email
+      // const customer_pass=req.body.customer_pass
      // let salt= await bcrypt.genSalt(10);
    //  customer_pass=await bcrypt.hash(customer_pass,salt)               
                     let query= `select customer_id,customer_email,customer_pass  from customers where customer_email='${customer_email}' and customer_pass='${customer_pass}' `            
@@ -319,19 +324,36 @@ exports.loginCustomer =(req, res, next) => {
                      {
                      next(err)
                    }
-                   
-                    if((customer_email!=recordset.recordset[0].customer_email)&&(customer_pass!=recordset.recordset[0].customer_pass)){
-                    next(new ErrorResponse('email and Password both does not match',404));
-                   }
-                  else if(customer_email!=recordset.recordset[0].customer_email){
-                    next(new ErrorResponse('email does not match',404));
-                                       }
-                  else if(customer_pass!=recordset.recordset[0].customer_pass){
-                    next(new ErrorResponse('Password does not match',404));
-                                       }
+                   else{
+                    console.log(recordset)
+                    if(recordset.recordset.length==0)
+                    {
+                      res
+                      .status(404)
+                      .json({
+                        success: false
+                                                        });
+                    }
                     else{
-                      sendTokenResponse(recordset.recordset[0].customer_id, 200, res,recordset);
-                                        }
+                      res
+                      .status(200)
+                      .json({
+                        success: true
+                                                        });
+                    }
+                   }
+                  //   if((customer_email!=recordset.recordset[0].customer_email)&&(customer_pass!=recordset.recordset[0].customer_pass)){
+                  //   next(new ErrorResponse('email and Password both does not match',404));
+                  //  }
+                  // else if(customer_email!=recordset.recordset[0].customer_email){
+                  //   next(new ErrorResponse('email does not match',404));
+                  //                      }
+                  // else if(customer_pass!=recordset.recordset[0].customer_pass){
+                  //   next(new ErrorResponse('Password does not match',404));
+                  //                      }
+                  //   else{
+                  //     sendTokenResponse(recordset.recordset[0].customer_id, 200, res,recordset);
+                  //                       }
                                        });    
  }
 
