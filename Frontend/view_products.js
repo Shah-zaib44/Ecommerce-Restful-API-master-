@@ -23,15 +23,16 @@ function showProducts(){
                        <td class="text-center">${ab.product_price}/-</td>
                        
                       
-                             <td class="text-center">
-                       <button  type='submit'class='btn btn-danger' name='delete'>Delete</button>
-                       </td>
-                       <td class="text-center"> 
+                         
     
                     
                        <button  type='submit'class='btn btn-primary' name='update'>Update</button>
                        </td>
                        <td ></td>
+                       <td class="text-center">
+                       <button  type='submit'class='btn btn-danger' name='delete'>Delete</button>
+                       </td>
+                       <td class="text-center"> 
             </tr>
           `;
           });
