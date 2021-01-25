@@ -190,6 +190,7 @@ exports.getProduct = asyncHandler((req, res, next) => {
 // // create using form-data
 
 exports.createProduct =asyncHandler( (req, res, next) => {
+ 
   if(!req.files)
   {
     next(new ErrorResponse('please upload a file',404));
@@ -203,10 +204,16 @@ exports.createProduct =asyncHandler( (req, res, next) => {
        next(new ErrorResponse(`please upload a image of size less than ${process.env.max_file_size}`,404));
        console.log(req.files.file.size)
        }
-    console.log(parseInt(req.body.product_id))
-                             let filename=req.files.file.name;
-                              connectDB().request().query(`insert into products (product_id,product_category,product_title,product_image) values ('${req.body.product_id}','${req.body.product_category}','${req.body.product_title}','${filename}')`, function (err) {
+      let product_category=JSON.parse(JSON.stringify(req.body)).product_category
+     let  product_title= JSON.parse(JSON.stringify(req.body)).product_title
+                             let filename=JSON.parse(JSON.stringify(req.files.file)).name;
+                             console.log(filename)
+                             console.log(product_title)
+                             console.log(product_category)
+                            
+                              connectDB().request().query(`insert into products (product_category,product_title,product_image) values ('${product_category}','${product_title}','${filename}')`, function (err) {
                               if (err) {
+                                
                                 next(new ErrorResponse('fail',404));
                               }
                               else {

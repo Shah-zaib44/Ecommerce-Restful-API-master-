@@ -16,8 +16,6 @@ btnsubmit.addEventListener('click',userLogin);
   else{
     window.location.href='../Frontend/login.html'
   }
-		// let token = response.sessionToken;
-		// localStorage.setItem('SessionToken', token);
   });
   e.preventDefault();
 }
