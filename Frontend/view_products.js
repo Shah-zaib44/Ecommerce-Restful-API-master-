@@ -13,26 +13,27 @@ function showProducts(){
         let output = '';
 
         article.data.recordset.forEach(function(ab,index){
+           
             output += `
             <tr> 
-                       <td ></td><td></td>
+                       <td class="${ab.product_id}" ></td>
                        <td class="text-center">${index+1}</td>
-                       
+                       <td class="text-center">${ab.product_category}</td>
                        <td class="text-center">${ab.product_title}</td>
                        <td class="text-center"><img id='cartImage'  src='../public/uploads/${ab.product_image}'></td>
                        <td class="text-center">${ab.product_price}/-</td>
                        
                       
                          
+                       <td class="text-center"> 
     
                     
-                       <button  type='submit'class='btn btn-primary' name='update'>Update</button>
+                       <button  type='submit' id="update" class='btn btn-primary' name='update'>Update</button>
+                       </td>
+                       <td class="text-center">
+                       <button  type='submit' id="delete" class='btn btn-danger' name='delete'>Delete</button>
                        </td>
                        <td ></td>
-                       <td class="text-center">
-                       <button  type='submit'class='btn btn-danger' name='delete'>Delete</button>
-                       </td>
-                       <td class="text-center"> 
             </tr>
           `;
           });
@@ -40,7 +41,12 @@ function showProducts(){
          
         
           document.getElementById('cartTableBody').innerHTML = output;
-      
-
+        
+          let p=document.getElementsByClassName('btn-primary')
+         
+          for (let i = 0; i < p.length; i++) {
+              let input = p[i]
+              input.addEventListener('click', userLogin)
+          }
     })();
 }

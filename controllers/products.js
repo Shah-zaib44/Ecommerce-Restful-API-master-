@@ -256,17 +256,17 @@ exports.createProduct =asyncHandler( (req, res, next) => {
 
 // by using body/json
 exports.updateProduct =asyncHandler( (req, res, next) => {
-                     let body = [];
-                     req
-                       .on("data", (chunk) => {
-                         body.push(chunk);
-                                            })
-                       .on("end", () => {
-                         body = Buffer.concat(body).toString();
-                         const { product_id, product_category,product_title } = JSON.parse(body);
-                         connectDB().request().query(`update products set product_id='${product_id}', product_category='${product_category}',product_title='${product_title}' where product_id='${req.params.id}'`, function (err, recordset) {
+  let product_price=JSON.parse(JSON.stringify(req.body)).product_price
+
+  let product_category=JSON.parse(JSON.stringify(req.body)).product_category
+  let  product_title= JSON.parse(JSON.stringify(req.body)).product_title
+  let product_id=JSON.parse(JSON.stringify(req.params)).id
+  console.log(product_category)
+  console.log(product_id)
+                         connectDB().request().query(`update products set  product_category='${product_category}',product_title='${product_title}',product_price='${product_price}' where product_id='${product_id}'`, function (err, recordset) {
                       if (err) {
                         next(err);
+                        console.log(err)
                       }
                       else {
                                             res.status(200).json({
@@ -276,7 +276,7 @@ exports.updateProduct =asyncHandler( (req, res, next) => {
                       }
           });
         })  
-})
+
 
 exports.deleteProduct =asyncHandler( (req, res, next) => {
   connectDB().request().query(`delete from products where product_id=${req.params.id}`, function (err, recordset) {
