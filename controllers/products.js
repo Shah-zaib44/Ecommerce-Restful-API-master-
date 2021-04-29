@@ -43,7 +43,7 @@ console.log(req.body)
       z.push(y);
     }
      }
-  search=`select * from products order by product_category`;
+  search=`select * from products`;
   if(z[0]=='lt')
   {
     search=`select * from products where product_id<${q[x][z[0]]}`;
@@ -190,6 +190,7 @@ exports.getProduct = asyncHandler((req, res, next) => {
 // // create using form-data
 
 exports.createProduct =asyncHandler( (req, res, next) => {
+ 
   if(!req.files)
   {
     next(new ErrorResponse('please upload a file',404));
@@ -203,10 +204,16 @@ exports.createProduct =asyncHandler( (req, res, next) => {
        next(new ErrorResponse(`please upload a image of size less than ${process.env.max_file_size}`,404));
        console.log(req.files.file.size)
        }
-    console.log(parseInt(req.body.product_id))
-                             let filename=req.files.file.name;
-                              connectDB().request().query(`insert into products (product_id,product_category,product_title,product_image) values ('${req.body.product_id}','${req.body.product_category}','${req.body.product_title}','${filename}')`, function (err) {
+      let product_category=JSON.parse(JSON.stringify(req.body)).product_category
+     let  product_title= JSON.parse(JSON.stringify(req.body)).product_title
+                             let filename=JSON.parse(JSON.stringify(req.files.file)).name;
+                             console.log(filename)
+                             console.log(product_title)
+                             console.log(product_category)
+                            
+                              connectDB().request().query(`insert into products (product_category,product_title,product_image) values ('${product_category}','${product_title}','${filename}')`, function (err) {
                               if (err) {
+                                
                                 next(new ErrorResponse('fail',404));
                               }
                               else {
@@ -309,8 +316,13 @@ const {customer_id,customer_name,customer_email,customer_pass,customer_country,c
 }
 
 exports.loginCustomer =(req, res, next) => {
-      const customer_email=req.body.customer_email;
-      const customer_pass=req.body.customer_pass;
+  console.log(req)
+  //for form
+      const customer_email=JSON.parse(JSON.stringify(req.body)).c_email;
+      const customer_pass=JSON.parse(JSON.stringify(req.body)).c_pass;
+     // for postman
+      // const customer_email=  req.body.customer_email
+      // const customer_pass=req.body.customer_pass
      // let salt= await bcrypt.genSalt(10);
    //  customer_pass=await bcrypt.hash(customer_pass,salt)               
                     let query= `select customer_id,customer_email,customer_pass  from customers where customer_email='${customer_email}' and customer_pass='${customer_pass}' `            
@@ -319,19 +331,36 @@ exports.loginCustomer =(req, res, next) => {
                      {
                      next(err)
                    }
-                   
-                    if((customer_email!=recordset.recordset[0].customer_email)&&(customer_pass!=recordset.recordset[0].customer_pass)){
-                    next(new ErrorResponse('email and Password both does not match',404));
-                   }
-                  else if(customer_email!=recordset.recordset[0].customer_email){
-                    next(new ErrorResponse('email does not match',404));
-                                       }
-                  else if(customer_pass!=recordset.recordset[0].customer_pass){
-                    next(new ErrorResponse('Password does not match',404));
-                                       }
+                   else{
+                    console.log(recordset)
+                    if(recordset.recordset.length==0)
+                    {
+                      res
+                      .status(404)
+                      .json({
+                        success: false
+                                                        });
+                    }
                     else{
-                      sendTokenResponse(recordset.recordset[0].customer_id, 200, res,recordset);
-                                        }
+                      res
+                      .status(200)
+                      .json({
+                        success: true
+                                                        });
+                    }
+                   }
+                  //   if((customer_email!=recordset.recordset[0].customer_email)&&(customer_pass!=recordset.recordset[0].customer_pass)){
+                  //   next(new ErrorResponse('email and Password both does not match',404));
+                  //  }
+                  // else if(customer_email!=recordset.recordset[0].customer_email){
+                  //   next(new ErrorResponse('email does not match',404));
+                  //                      }
+                  // else if(customer_pass!=recordset.recordset[0].customer_pass){
+                  //   next(new ErrorResponse('Password does not match',404));
+                  //                      }
+                  //   else{
+                  //     sendTokenResponse(recordset.recordset[0].customer_id, 200, res,recordset);
+                  //                       }
                                        });    
  }
 
